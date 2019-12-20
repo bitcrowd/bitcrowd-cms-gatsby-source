@@ -1,0 +1,33 @@
+{
+  "name": "bchp6-cms-gatsby-source",
+  "version": "1.0.0",
+  "description": "A source plugin for Gatsby that consumes the JSON API of the BCHP6 CMS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint --fix --max-warnings 0 --ext .js --ignore-path .gitignore ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitcrowd/bchp6-cms-gatsby-source.git"
+  },
+  "author": "Bitcrowd GmbH",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/bitcrowd/bchp6-cms-gatsby-source/issues"
+  },
+  "homepage": "https://github.com/bitcrowd/bchp6-cms-gatsby-source#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-gatsby-package": "^0.2.14",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.1.1",
+    "jest": "^24.9.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.7.7"
+  }
+}
