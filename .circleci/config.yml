@@ -37,7 +37,7 @@ jobs:
           key: repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: Run Tests
-          command: yarn test --maxWorkers=2 --ci --reporters=default
+          command: yarn test --maxWorkers=2 --ci --reporters=default --reporters=jest-junit
 workflows:
   version: 2
   checks:
