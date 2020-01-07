@@ -5,21 +5,6 @@ export const empty = {
   },
 };
 
-export const one = {
-  data: [
-    {
-      id: 'cb0b940b-b1a3-49fd-bf93-3950223b29fd',
-      type: 'Page',
-      attributes: {
-        slug: 'index',
-      },
-    },
-  ],
-  jsonapi: {
-    version: '1.0',
-  },
-};
-
 export const many = {
   data: [
     {
