@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
 import * as pagesIndexFixtures from './__test__/fixtures/pages-index';
+import * as pagesFixtures from './__test__/fixtures/pages';
 
 import { sourceNodes } from './gatsby-node';
 
@@ -14,7 +15,7 @@ const response = (payload, status) => ({
 
 const callSubject = async () => {
   const actions = { createNode: jest.fn() };
-  const createContentDigest = jest.fn((x) => x);
+  const createContentDigest = jest.fn(x => x.id);
 
   const pluginOptions = { endpoint: 'http://example.net', locale: 'int-en' };
 
@@ -29,27 +30,37 @@ describe('sourceNodes', () => {
 
     await callSubject();
 
-    expect(fetch).toHaveBeenCalledWith('http://example.net/pages/int-en');
+    expect(fetch).toHaveBeenCalledWith(
+      'http://example.net/api/v1/pages/int-en'
+    );
   });
 
   test('creates a node for each page', async () => {
-    fetch.mockResolvedValue(response(pagesIndexFixtures.many));
+    fetch.mockResolvedValueOnce(response(pagesIndexFixtures.many));
+    fetch.mockResolvedValueOnce(response(pagesFixtures.index));
+    fetch.mockResolvedValueOnce(response(pagesFixtures.foo));
 
     const { createNode } = await callSubject();
 
     expect(createNode).toHaveBeenNthCalledWith(1, {
-      id: 'cb0b940b-b1a3-49fd-bf93-3950223b29fd',
+      id: 'Page-cb0b940b-b1a3-49fd-bf93-3950223b29fd',
       parent: null,
       children: [],
-      internal: { type: 'Page', contentDigest: 'cb0b940b-b1a3-49fd-bf93-3950223b29fd' },
+      internal: {
+        type: 'CmsPage',
+        contentDigest: 'Page-cb0b940b-b1a3-49fd-bf93-3950223b29fd',
+      },
       slug: 'index',
     });
 
     expect(createNode).toHaveBeenNthCalledWith(2, {
-      id: '4007a470-232b-11ea-aaef-0800200c9a66',
+      id: 'Page-4007a470-232b-11ea-aaef-0800200c9a66',
       parent: null,
       children: [],
-      internal: { type: 'Page', contentDigest: '4007a470-232b-11ea-aaef-0800200c9a66' },
+      internal: {
+        type: 'CmsPage',
+        contentDigest: 'Page-4007a470-232b-11ea-aaef-0800200c9a66',
+      },
       slug: 'the-cat-post',
     });
   });

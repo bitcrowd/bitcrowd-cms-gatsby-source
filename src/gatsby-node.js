@@ -1,32 +1,71 @@
-import fetch from 'node-fetch';
+import nodeType from './node-type';
+import * as CmsClient from './cms-client';
 
-const fetchConfig = (pluginOptions) => ({
-  endpoint: process.env.BCHP6_CMS_GATSBY_SOURCE_ENDPOINT || pluginOptions.endpoint,
-  locale: process.env.BCHP6_CMS_GATSBY_SOURCE_LOCALE || pluginOptions.locale,
-});
+const nodeId = resource => `${resource.type}-${resource.id}`;
 
-const fetchPages = async ({ endpoint, locale }) => {
-  const pagesIndexUrl = `${endpoint}/pages/${locale}`;
-  const response = await fetch(pagesIndexUrl);
-  const { data } = await response.json();
-  return data;
+export const sourceNodes = async (
+  { actions, createContentDigest },
+  pluginOptions
+) => {
+  const { createNode } = actions;
+
+  const createNodeFromResource = async resource => {
+    const relationships = {};
+    Object.entries(resource.relationships || {})
+      .filter(arr => 'data' in arr[1] && arr[1].data !== null)
+      .forEach(([key, { data }]) => {
+        const relKey = `${key}___NODE`;
+
+        if (data instanceof Array) {
+          relationships[relKey] = data.map(nodeId);
+        } else {
+          relationships[relKey] = nodeId(data);
+        }
+      });
+
+    const node = {
+      id: nodeId(resource),
+      parent: null,
+      children: [],
+      ...resource.attributes,
+      ...relationships,
+    };
+
+    const internal = {
+      type: nodeType(resource.type),
+      contentDigest: createContentDigest(node),
+    };
+    const created = await createNode({ ...node, internal });
+
+    return created;
+  };
+
+  // Fetch slugs of published pages.
+  const slugs = await CmsClient.fetchSlugs(pluginOptions);
+
+  return Promise.all(
+    slugs.map(async slug => {
+      const { data, included } = await CmsClient.fetchPage(pluginOptions, slug);
+
+      // First create nodes for all included resources.
+      await Promise.all(
+        included.map(async resource => createNodeFromResource(resource))
+      );
+
+      // Create page node.
+      return createNodeFromResource(data);
+    })
+  );
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export const sourceNodes = async ({ actions, createContentDigest }, pluginOptions) => {
-  const { createNode } = actions;
-  const config = fetchConfig(pluginOptions);
+export const onCreateNode = ({ node, actions }, pluginOptions) => {
+  const { createNodeField } = actions;
 
-  const pages = await fetchPages(config);
-
-  return Promise.all(pages.map((page) => createNode({
-    id: page.id,
-    parent: null,
-    children: [],
-    internal: {
-      contentDigest: createContentDigest(page.id),
-      type: page.type,
-    },
-    slug: page.attributes.slug,
-  })));
+  if (node.internal.type === 'CmsImage') {
+    createNodeField({
+      node,
+      name: 'src',
+      value: `${pluginOptions.endpoint}${node.url}`,
+    });
+  }
 };
