@@ -1,3 +1,6 @@
 node_modules
 yarn.lock
 src
+.circleci
+.prettierrc.json
+.eslintrc.json
