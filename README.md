@@ -1,4 +1,6 @@
-# Development
+This package adds support for the bitcrowd CMS to gatsby.
+
+# Installation
 
 Add the plugin to `gatsby-config.js` as follows:
 
@@ -13,3 +15,5 @@ plugins: [
   },
 ]
 ```
+
+After that you can access the pages and assets in Graphql with the prefix `Cms`.

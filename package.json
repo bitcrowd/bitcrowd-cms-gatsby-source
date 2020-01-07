@@ -1,6 +1,6 @@
 {
   "name": "bitcrowd-cms-gatsby-source",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A source plugin for Gatsby that consumes the JSON API of the bitcrowd CMS.",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
     "url": "git+https://github.com/bitcrowd/bitcrowd-cms-gatsby-source.git"
   },
   "author": "Bitcrowd GmbH",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/bitcrowd/bitcrowd-cms-gatsby-source/issues"
   },
