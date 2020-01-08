@@ -17,3 +17,12 @@ plugins: [
 ```
 
 After that you can access the pages and assets in Graphql with the prefix `Cms`.
+
+# Contributing
+
+```sh
+yarn test
+yarn lint
+```
+
+Please keep [the changelog](CHANGELOG.md) up to date as well.
