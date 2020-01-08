@@ -6,7 +6,8 @@
   "scripts": {
     "build": "babel src --out-dir . --ignore **/__test__ --ignore **/*.test.js",
     "test": "jest",
-    "lint": "eslint --ext .js ./src"
+    "lint": "eslint --ext .js ./src",
+    "prepublishOnly": "yarn build"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,6 @@
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.1.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.2",
     "jest": "^24.9.0",
     "jest-junit": "^10.0.0",
