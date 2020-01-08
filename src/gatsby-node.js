@@ -1,5 +1,6 @@
 import nodeFromResource from './node-helpers';
 import { fetchSlugs, fetchPage } from './cms-client';
+import markdownConverter from './markdown-converter';
 
 export const sourceNodes = async (
   { actions, createContentDigest },
@@ -29,14 +30,31 @@ export const sourceNodes = async (
   );
 };
 
-export const onCreateNode = ({ node, actions }, pluginOptions) => {
+const addUrlToImage = ({ node, actions }, pluginOptions) => {
+  if (node.internal.type !== 'CmsImage') return;
+
   const { createNodeField } = actions;
 
-  if (node.internal.type === 'CmsImage') {
-    createNodeField({
-      node,
-      name: 'src',
-      value: `${pluginOptions.endpoint}${node.url}`,
-    });
-  }
+  createNodeField({
+    node,
+    name: 'src',
+    value: `${pluginOptions.endpoint}${node.url}`,
+  });
+};
+
+const addHtmlToTextBlock = ({ node, actions }) => {
+  if (node.internal.type !== 'CmsComponentText') return;
+
+  const { createNodeField } = actions;
+
+  createNodeField({
+    node,
+    name: 'html',
+    value: markdownConverter.render(node.content),
+  });
+};
+
+export const onCreateNode = (opts, pluginOptions) => {
+  addUrlToImage(opts, pluginOptions);
+  addHtmlToTextBlock(opts, pluginOptions);
 };

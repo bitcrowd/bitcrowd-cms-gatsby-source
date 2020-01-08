@@ -88,14 +88,7 @@ describe('sourceNodes', () => {
 });
 
 describe('onCreateNode', () => {
-  test('it adds an absolute URL to Image resources', () => {
-    const node = {
-      url: '/some/path',
-      internal: {
-        type: 'CmsImage',
-      },
-    };
-
+  function subject(node) {
     const actions = {
       createNodeField: jest.fn(),
     };
@@ -106,10 +99,40 @@ describe('onCreateNode', () => {
 
     onCreateNode({ node, actions }, pluginOptions);
 
-    expect(actions.createNodeField).toHaveBeenCalledWith({
+    return actions;
+  }
+
+  test('it adds an absolute URL to Image resources', () => {
+    const node = {
+      url: '/some/path',
+      internal: {
+        type: 'CmsImage',
+      },
+    };
+
+    const { createNodeField } = subject(node);
+
+    expect(createNodeField).toHaveBeenCalledWith({
       node,
       name: 'src',
       value: 'http://example.net/some/path',
+    });
+  });
+
+  test('it adds compiled HTML to TextBlock resources', () => {
+    const node = {
+      content: '*foo*',
+      internal: {
+        type: 'CmsComponentText',
+      },
+    };
+
+    const { createNodeField } = subject(node);
+
+    expect(createNodeField).toHaveBeenCalledWith({
+      node,
+      name: 'html',
+      value: '<p><em>foo</em></p>\n',
     });
   });
 });
