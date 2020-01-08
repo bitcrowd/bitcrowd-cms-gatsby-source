@@ -1,11 +1,13 @@
-export const empty = {
+import response from '../response';
+
+export const empty = response({
   data: [],
   jsonapi: {
     version: '1.0',
   },
-};
+});
 
-export const many = {
+export const many = response({
   data: [
     {
       id: 'cb0b940b-b1a3-49fd-bf93-3950223b29fd',
@@ -25,4 +27,4 @@ export const many = {
   jsonapi: {
     version: '1.0',
   },
-};
+});

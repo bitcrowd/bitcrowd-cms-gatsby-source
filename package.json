@@ -4,7 +4,7 @@
   "description": "A source plugin for Gatsby that consumes the JSON API of the bitcrowd CMS.",
   "main": "index.js",
   "scripts": {
-    "build": "babel src --out-dir . --ignore **/__test__ --ignore **/*.test.js",
+    "build": "babel src --out-dir . --ignore \"**/__test__\",\"**/*.test.js\"",
     "test": "jest",
     "lint": "eslint --ext .js ./src",
     "prepublishOnly": "yarn build"
