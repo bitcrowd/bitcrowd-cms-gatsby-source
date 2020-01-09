@@ -1,10 +1,13 @@
+import EmbedJS from 'embed-js';
+import noembed from 'embed-plugin-noembed';
+import fetch from 'node-fetch';
 import markdownConverter from './markdown-converter';
 
 const addNodeProps = (type, func) => {
-  return (node, pluginOptions) => {
+  return async (node, pluginOptions) => {
     if (node.internal.type !== type) return node;
 
-    const newProps = func(node, pluginOptions);
+    const newProps = await func(node, pluginOptions);
 
     return {
       ...node,
@@ -12,6 +15,22 @@ const addNodeProps = (type, func) => {
     };
   };
 };
+
+export const addEmbedToMediaBlock = addNodeProps(
+  'CmsComponentMedia',
+  async node => {
+    const embed = new EmbedJS({
+      fetch,
+      replaceUrl: true,
+      input: node.url,
+      plugins: [noembed({})],
+    });
+
+    const html = await embed.text().then(({ result }) => result);
+
+    return { html };
+  }
+);
 
 export const addSrcToImage = addNodeProps(
   'CmsImage',
@@ -22,4 +41,16 @@ export const addHtmlToTextBlock = addNodeProps('CmsComponentText', node => ({
   html: markdownConverter.render(node.content),
 }));
 
-export default [addSrcToImage, addHtmlToTextBlock];
+const nodeTransformations = [
+  addEmbedToMediaBlock,
+  addSrcToImage,
+  addHtmlToTextBlock,
+];
+
+const transformNode = (node, pluginOptions) =>
+  nodeTransformations.reduce(async (previous, transformation) => {
+    const current = await previous;
+    return transformation(current, pluginOptions);
+  }, Promise.resolve(node));
+
+export default transformNode;
