@@ -1,6 +1,6 @@
 import nodeFromResource from './node-helpers';
+import nodeTransformations from './node-transformations';
 import { fetchSlugs, fetchPage } from './cms-client';
-import markdownConverter from './markdown-converter';
 
 /*
  * Tell Gatsby a bit about our schema, to allow it to execute
@@ -16,12 +16,8 @@ export const createSchemaCustomization = ({ actions }) => {
   const { createTypes } = actions;
 
   const typeDefs = `
-    type CmsImageFields {
-      url: String
-    }
-
     type CmsImage implements Node {
-      fields: CmsImageFields
+      src: String
     }
 
     type CmsRootPage implements Node {
@@ -47,10 +43,17 @@ export const sourceNodes = async (
 ) => {
   const { createNode } = actions;
 
-  const createNodeFromResource = async resource => {
-    const node = nodeFromResource(resource, createContentDigest);
-    const created = await createNode(node);
-    return created;
+  const createNodeFromResource = resource => {
+    const node = nodeTransformations.reduce(
+      (n, op) => op(n, pluginOptions),
+      nodeFromResource(resource)
+    );
+
+    node.internal.contentDigest = createContentDigest(node);
+
+    /* const created = await createNode(node);
+    return created; */
+    return createNode(node);
   };
 
   // Fetch slugs of published pages.
@@ -67,33 +70,4 @@ export const sourceNodes = async (
       return createNodeFromResource(data);
     })
   );
-};
-
-const addUrlToImage = ({ node, actions }, pluginOptions) => {
-  if (node.internal.type !== 'CmsImage') return;
-
-  const { createNodeField } = actions;
-
-  createNodeField({
-    node,
-    name: 'src',
-    value: `${pluginOptions.endpoint}${node.url}`,
-  });
-};
-
-const addHtmlToTextBlock = ({ node, actions }) => {
-  if (node.internal.type !== 'CmsComponentText') return;
-
-  const { createNodeField } = actions;
-
-  createNodeField({
-    node,
-    name: 'html',
-    value: markdownConverter.render(node.content),
-  });
-};
-
-export const onCreateNode = (opts, pluginOptions) => {
-  addUrlToImage(opts, pluginOptions);
-  addHtmlToTextBlock(opts, pluginOptions);
 };
