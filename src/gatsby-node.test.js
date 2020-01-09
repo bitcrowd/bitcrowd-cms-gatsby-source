@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import * as pagesIndexFixtures from './__test__/fixtures/pages-index';
 import * as pagesFixtures from './__test__/fixtures/pages';
 
-import { sourceNodes, onCreateNode } from './gatsby-node';
+import { sourceNodes } from './gatsby-node';
 
 jest.mock('node-fetch', () => jest.fn());
 
@@ -71,6 +71,7 @@ describe('sourceNodes', () => {
         contentDigest: 'component/text-49bbbd10-8bdc-48de-9bcf-a46f56195c1b',
       },
       content: 'Cats write short articles',
+      html: '<p>Cats write short articles</p>\n',
     });
 
     expect(createNode).toHaveBeenCalledWith({
@@ -83,56 +84,6 @@ describe('sourceNodes', () => {
         contentDigest: 'Page-4007a470-232b-11ea-aaef-0800200c9a66',
       },
       slug: 'the-cat-post',
-    });
-  });
-});
-
-describe('onCreateNode', () => {
-  function subject(node) {
-    const actions = {
-      createNodeField: jest.fn(),
-    };
-
-    const pluginOptions = {
-      endpoint: 'http://example.net',
-    };
-
-    onCreateNode({ node, actions }, pluginOptions);
-
-    return actions;
-  }
-
-  test('it adds an absolute URL to Image resources', () => {
-    const node = {
-      url: '/some/path',
-      internal: {
-        type: 'CmsImage',
-      },
-    };
-
-    const { createNodeField } = subject(node);
-
-    expect(createNodeField).toHaveBeenCalledWith({
-      node,
-      name: 'src',
-      value: 'http://example.net/some/path',
-    });
-  });
-
-  test('it adds compiled HTML to TextBlock resources', () => {
-    const node = {
-      content: '*foo*',
-      internal: {
-        type: 'CmsComponentText',
-      },
-    };
-
-    const { createNodeField } = subject(node);
-
-    expect(createNodeField).toHaveBeenCalledWith({
-      node,
-      name: 'html',
-      value: '<p><em>foo</em></p>\n',
     });
   });
 });

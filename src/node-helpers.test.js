@@ -10,9 +10,7 @@ describe('nodeFromResource', () => {
       ...resourceProps,
     };
 
-    const createContentDigest = x => x.id;
-
-    return nodeFromResource(resource, createContentDigest);
+    return nodeFromResource(resource);
   }
 
   test('builds Cms-prefixed Node types from resource types', () => {

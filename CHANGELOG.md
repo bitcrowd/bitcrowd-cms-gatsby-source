@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 # Unreleased
 
+## Changed
+
+* Transformations are applied in `sourceNodes` which allows us to put enriched content directly on the node. Hence `fields { src } on CmsImage` becomes just `src on CmsImage`.
+
 # [0.1.1] - 2019-01-08
 
 ## Added

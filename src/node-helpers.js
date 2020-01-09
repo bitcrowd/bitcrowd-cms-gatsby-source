@@ -13,7 +13,7 @@ const nodeType = resource => `Cms${camelizeResourceType(resource.type)}`;
 
 const nodeId = resource => `${resource.type}-${resource.id}`;
 
-const nodeFromResource = (resource, createContentDigest) => {
+const nodeFromResource = resource => {
   const relationships = {};
   Object.entries(resource.relationships || {})
     .filter(arr => 'data' in arr[1] && arr[1].data !== null)
@@ -37,7 +37,6 @@ const nodeFromResource = (resource, createContentDigest) => {
 
   const internal = {
     type: nodeType(resource),
-    contentDigest: createContentDigest(node),
   };
 
   return { ...node, internal };
