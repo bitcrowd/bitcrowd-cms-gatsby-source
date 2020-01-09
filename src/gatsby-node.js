@@ -1,5 +1,5 @@
 import nodeFromResource from './node-helpers';
-import nodeTransformations from './node-transformations';
+import transformNode from './node-transformations';
 import { fetchSlugs, fetchPage } from './cms-client';
 
 /*
@@ -43,16 +43,11 @@ export const sourceNodes = async (
 ) => {
   const { createNode } = actions;
 
-  const createNodeFromResource = resource => {
-    const node = nodeTransformations.reduce(
-      (n, op) => op(n, pluginOptions),
-      nodeFromResource(resource)
-    );
+  const createNodeFromResource = async resource => {
+    const node = await transformNode(nodeFromResource(resource), pluginOptions);
 
     node.internal.contentDigest = createContentDigest(node);
 
-    /* const created = await createNode(node);
-    return created; */
     return createNode(node);
   };
 

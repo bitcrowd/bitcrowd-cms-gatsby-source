@@ -18,6 +18,12 @@ plugins: [
 
 After that you can access the pages and assets in Graphql with the prefix `Cms`.
 
+## Embedded Twitter Links
+
+To show Twitter embeds in their full glory, you'll need to add the twitter widgets javascript library to your site.
+
+The easiest solution is to add `gatsby-plugin-twitter` to your gatsby config.
+
 # Contributing
 
 ```sh
