@@ -3,7 +3,7 @@ references:
   base: &base
     docker:
       - image: circleci/node:12
-    working_directory: ~/bchp6-cms-gatsby-source
+    working_directory: ~/bitcrowd-cms-gatsby-source
 jobs:
   setup:
     <<: *base
@@ -21,7 +21,7 @@ jobs:
       - save_cache:
           key: repo-{{ .Environment.CIRCLE_SHA1 }}
           paths:
-            - ~/bchp6-cms-gatsby-source
+            - ~/bitcrowd-cms-gatsby-source
   lint:
     <<: *base
     steps:
