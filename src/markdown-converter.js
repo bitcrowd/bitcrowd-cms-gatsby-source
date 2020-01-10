@@ -10,6 +10,7 @@ converter
   .enable('emphasis')
   .enable('link')
   .enable('list')
+  .enable('table')
   .enable('smartquotes');
 
 export default converter;
