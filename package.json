@@ -1,6 +1,6 @@
 {
   "name": "bitcrowd-cms-gatsby-source",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A source plugin for Gatsby that consumes the JSON API of the bitcrowd CMS.",
   "main": "index.js",
   "scripts": {

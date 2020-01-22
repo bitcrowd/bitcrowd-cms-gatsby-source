@@ -20,17 +20,17 @@ export const createSchemaCustomization = ({ actions }) => {
       src: String
     }
 
+    type CmsPage implements Node {
+      description: String
+      image: CmsImage
+    }
+
     type CmsRootPage implements Node {
-      seo_title_opengraph: String
-      seo_description_opengraph: String
-      seo_image_opengraph: CmsImage
-
-      seo_title_twitter: String
-      seo_description_twitter: String
-      seo_image_twitter: CmsImage
-
-      seo_title_search: String
-      seo_description_search: String
+      image: CmsImage
+      description: String
+      redirect_url: String
+      image_opengraph: CmsImage
+      author: CmsPage
     }
   `;
 
